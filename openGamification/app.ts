@@ -110,11 +110,16 @@ class Points {
     public toString() {
         return this.value;
     }
+
+    public getValue() {
+        return this.value;
+    }
 }
 
 class Leaderboard extends PublishedGameElement {
     title: String;
     pointList: Points[];
+    gamerList: Gamer[];
     unit: String;
 
     constructor(publisher: Publisher, title: String, unit:String = "points") {
@@ -128,6 +133,26 @@ class Leaderboard extends PublishedGameElement {
     addGamer(newGamer: Gamer, points: number) {
         this.gamerList.push(newGamer);
         this.pointList.push(new Points(this.publisher, points, this.unit));
+    }
+
+    sort() {
+        //bubblesort
+        var swap = true;
+        var sortedList = this.gamerList;
+        while (swap == true) {
+            swap = false;
+        for (var i = 0; i < this.pointList.length - 1; i++) {
+          if(this.pointList[i] < this.pointList[i + 1]){
+                    var tempPoint = this.pointList[i];
+                    var tempGamer = this.gamerList[i];
+                    this.pointList[i] = this.pointList[i + 1];
+                    this.gamerList[i] = this.gamerList[i + 1];
+                    this.pointList[i + 1] = tempPoint;
+                    this.gamerList[i + 1] = tempGamer;
+              swap = true;
+                }
+           }
+        }
     }
 
     toString() {
@@ -192,26 +217,39 @@ window.onload = () => {
     // @see: <div id="content"></div> in default.htm
     var htmlElementContent = document.getElementById('content');
 
+
+    // Leaderboardtest
     var publisher = new Publisher("UBIweich", "sicher");
     var gamer = new Gamer("Horst", "passdort");
     var leaderboard = new Leaderboard(publisher, "VorlesungsLeader", "xp");
 
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Hans", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Hans", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Hans", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Hans", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Wurst", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Manns", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Ranns", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Gans", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
+    gamer = new Gamer("Dans", "passdort");
     leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
 
     var htmlElementList = document.getElementById('list');
+    htmlElementList.innerHTML += "The Gamers are ...";
+    htmlElementList.innerHTML += leaderboard.toString();
     htmlElementList.innerHTML += "And the Winners are ...";
+    leaderboard.sort();
     htmlElementList.innerHTML += leaderboard.toString();
     htmlElementList.innerHTML += "<h4>published by " + leaderboard.getPublisher().toString(); + "</h4>";
-
-    htmlElementList.innerHTML += "<input type=\"date\">";
+    // Leaderboardtest finished
 
 }
