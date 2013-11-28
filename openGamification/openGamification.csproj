@@ -18,14 +18,16 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="default.htm" />
-    <TypeScriptCompile Include="jquery.d.ts" />
     <Content Include="web.config" />
     <TypeScriptCompile Include="GameElements.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquerymobile\jquerymobile.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
