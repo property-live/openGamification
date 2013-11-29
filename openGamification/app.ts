@@ -29,18 +29,13 @@ window.onload = () => {
         leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
         gamer = new Gamer("Dans", "passdort");
         leaderboard.addGamer(gamer, Math.floor(Math.random() * 100));
-        var htmlElementList = document.getElementById('leaderboard');
+        var htmlElementList = document.getElementById('gamerList');
         htmlElementList.innerHTML += "The Gamers are ...";
-        htmlElementList.innerHTML += leaderboard.toString();
-        htmlElementList.innerHTML += "And the Winners are ...";
+        htmlElementList.innerHTML += leaderboard.toStringUl();
         leaderboard.sort();
+        var htmlElementList = document.getElementById('leaderboard');
+        htmlElementList.innerHTML += "And the Winners are ...";
         htmlElementList.innerHTML += leaderboard.toString();
         htmlElementList.innerHTML += "<h4>published by " + leaderboard.getPublisher().toString(); + "</h4>";
-    });
-    $("#hideLi").click(function () {
-        $("#leaderboard").hide();
-    });
-    $("#showLi").click(function () {
-        $("#leaderboard").show();
     });
 }

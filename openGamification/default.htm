@@ -4,16 +4,22 @@
 <head>
     <meta charset="utf-8" />
     <title>openGamification</title>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" type="text/css"/>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.css" type="text/css"/>
     <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.js"></script>
     <script src="app.js"></script>
 </head>
 
 <body>
-    <h2 class="auto-style1">TestApp</h2>
-    <button id="hideLi">Hide Leaderboard</button>
-    <input type="button" value="Show Leaderboard" id="showLi" />
-    <div id="leaderboard"></div>
+    <h2 class="auto-style1">TestApp for openGamification</h2>
+    <div data-role="collapsible" data-collapsed="true" data-theme="b">
+        <h3>Gamers</h3>
+        <div id="gamerList"></div>
+    </div>
+    <div data-role="collapsible" data-collapsed="true" data-theme="b">
+        <h3>Leaderboard</h3>
+        <div id="leaderboard"></div>
+    </div>
+
 </body>
 </html>

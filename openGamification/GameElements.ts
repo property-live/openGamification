@@ -151,12 +151,21 @@ class Leaderboard extends PublishedGameElement {
         }
     }
 
-    toString() {
+    public toString() {
         var text = "<ol>";
         for (var i = 0; i < this.gamerList.length; ++i) {
             text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
         }
         text += "</ol>";
+        return text;
+    }
+
+    public toStringUl() {
+        var text = "<ul>";
+        for (var i = 0; i < this.gamerList.length; ++i) {
+            text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
+        }
+        text += "</ul>";
         return text;
     }
 }

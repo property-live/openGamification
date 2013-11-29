@@ -159,6 +159,15 @@ var Leaderboard = (function (_super) {
         text += "</ol>";
         return text;
     };
+
+    Leaderboard.prototype.toStringUl = function () {
+        var text = "<ul>";
+        for (var i = 0; i < this.gamerList.length; ++i) {
+            text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
+        }
+        text += "</ul>";
+        return text;
+    };
     return Leaderboard;
 })(PublishedGameElement);
 
