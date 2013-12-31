@@ -4,22 +4,72 @@
 <head>
     <meta charset="utf-8" />
     <title>openGamification</title>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.css" type="text/css"/>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
     <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.js"></script>
     <script src="app.js"></script>
 </head>
 
 <body>
-    <h2 class="auto-style1">TestApp for openGamification</h2>
-    <div data-role="collapsible" data-collapsed="true" data-theme="b">
-        <h3>Gamers</h3>
-        <div id="gamerList"></div>
+    <div data-role="page" id="PageHome">
+        <header data-role="header" data-theme="b">
+            <h1>TestApp for openGamification</h1>
+            <a href="info.html" id="buttonP1Home" data-role="button" class="ui-btn-right" data-icon="info" data-inline="true" data-rel="dialog" data-transition="slidedown">Info</a>
+        </header>
+        <ul data-role="listview" data-inset="true" data-theme="d" data-divider-theme="d">
+            <li data-role="list-divider">GameElement Tests</li>
+            <li><a id="buttonHomeLeaderboard" data-icon="arrow-r">Leaderboard Test</a></li>
+            <li><a id="buttonHomeQuest" data-icon="arrow-r">Quest Test</a></li>
+            
+            <li data-role="list-divider">Links that will refresh the page</li>
+            <li><a href="file:///S:/Workspaces/GitHub/openGamification/openGamification/default.htm">Call File</a></li>
+        </ul>
     </div>
-    <div data-role="collapsible" data-collapsed="true" data-theme="b">
-        <h3>Leaderboard</h3>
-        <div id="leaderboard"></div>
+    <div data-role="page" id="PageLeaderboard">
+        <header data-role="header" data-theme="b">
+            <h1>TestApp for openGamification - Leaderboard Test</h1>
+            <button id="buttonLeaderboardBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
+            <button id="buttonLeaderboardHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
+        </header>
+        <h3>Choose your content</h3>
+        <div data-role="collapsible" data-collapsed="true" data-theme="b" data-transition="fade">
+            <h3>Add Gamer</h3>
+            <ul data-role="controlgroup" data-type="horizontal">
+                <li><input data-role="input" id="newGamerName" name="Gamer Name" type="text" maxlength="32"/></li>
+                <li><input data-role="input" id="newGamerName" name="Gamer Name" type="password" maxlength="32"/></li>
+                <li><a href="methods.html" data-role="button" data-transition="fade" data-icon="delete">Clear Input</a>
+                    <a data-role="button" id="newGamerNameSubmit" data-icon="plus">Add Gamer</a></li>
+            </ul>
+            
+        </div>
+        <div data-role="collapsible" data-collapsed="true" data-theme="b" data-transition="fade">
+            <h3>Gamer List</h3>
+            <div id="gamerList"></div>
+        </div>
+        <div data-role="collapsible" data-collapsed="true" data-theme="b">
+            <h3>Leaderboard</h3>
+            <div id="leaderboard"></div>
+            <div data-role="content">
+                <button id="addRow" data-role="button">ADD ROW</button>
+                <table data-role="table" data-mode="reflow" class="ui-responsive table-stroke">
+                    <thead>
+                        <tr>
+                            <th data-priority="2">Place</th>
+                            <th data-priority="persist">Name</th>
+                            <th data-priority="1">XP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="LeaderboardList"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
-
+    <div data-role="page" id="PageQuest">
+        <header data-role="header" data-theme="b">
+            <h1>TestApp for openGamification - Quest Test</h1>
+            <button id="buttonQuestBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
+            <button id="buttonQuestHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
+        </header>
+    </div>
 </body>
 </html>

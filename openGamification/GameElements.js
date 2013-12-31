@@ -29,6 +29,12 @@ var User = (function () {
     return User;
 })();
 
+/**
+* The gaming user of your application
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Gamer = (function (_super) {
     __extends(Gamer, _super);
     function Gamer(name, password) {
@@ -40,6 +46,12 @@ var Gamer = (function (_super) {
     return Gamer;
 })(User);
 
+/**
+* Any Publisher. A publisher has things like Leaderboards with Points and other cool stuff for Gamers
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Publisher = (function (_super) {
     __extends(Publisher, _super);
     function Publisher(name, password) {
@@ -55,6 +67,12 @@ var Publisher = (function (_super) {
     return Publisher;
 })(User);
 
+/**
+* The main gamificator
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var GlobalGamifier = (function (_super) {
     __extends(GlobalGamifier, _super);
     function GlobalGamifier(name, password) {
@@ -63,6 +81,12 @@ var GlobalGamifier = (function (_super) {
     return GlobalGamifier;
 })(Publisher);
 
+/**
+* A general GameElement class, which is extended by Published GameElement and GlobalGameElement
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var GameElement = (function () {
     function GameElement() {
     }
@@ -76,6 +100,12 @@ var GameElement = (function () {
     return GameElement;
 })();
 
+/**
+* GameElements which can be published by any Publisher
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var PublishedGameElement = (function (_super) {
     __extends(PublishedGameElement, _super);
     function PublishedGameElement(publisher) {
@@ -88,6 +118,12 @@ var PublishedGameElement = (function (_super) {
     return PublishedGameElement;
 })(GameElement);
 
+/**
+* GameElement registered by the main publisher (GlobalGamifier)
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var GlobalGameElement = (function (_super) {
     __extends(GlobalGameElement, _super);
     function GlobalGameElement(publisher) {
@@ -100,8 +136,16 @@ var GlobalGameElement = (function (_super) {
     return GlobalGameElement;
 })(GameElement);
 
-var Points = (function () {
+/**
+* Points of any type
+*
+* @author property-live
+* @version 2013.12.31
+*/
+var Points = (function (_super) {
+    __extends(Points, _super);
     function Points(publisher, value, unit) {
+        _super.call(this, publisher);
         this.publisher = publisher;
         this.value = value;
         this.unit = unit;
@@ -113,9 +157,70 @@ var Points = (function () {
     Points.prototype.getValue = function () {
         return this.value;
     };
-    return Points;
-})();
 
+    Points.prototype.increaseValue = function (value) {
+        if (value > 0) {
+            this.value += value;
+        } else {
+            this.value -= value;
+        }
+    };
+
+    Points.prototype.decreaseValue = function (value) {
+        if (value > 0) {
+            this.value -= value;
+        } else {
+            this.value += value;
+        }
+    };
+    return Points;
+})(PublishedGameElement);
+
+/**
+* Levels are, in a way, Points that can only be increased
+* When reaching a specific Level you increase your rank
+*
+* @author property-live
+* @version 2013.12.31
+*/
+var Level = (function (_super) {
+    __extends(Level, _super);
+    function Level(publisher, value, rank) {
+        _super.call(this, publisher);
+        this.index = 0;
+        this.value = value;
+        this.rank = rank;
+    }
+    Level.prototype.increase = function () {
+        this.value++;
+        if (this.value >= this.rankBorder[this.index]) {
+            this.index++;
+        }
+    };
+
+    Level.prototype.getValue = function () {
+        return this.value;
+    };
+
+    Level.prototype.getRank = function () {
+        return this.rank[this.index];
+    };
+
+    Level.prototype.toString = function () {
+        var text = "";
+        text += this.getValue() + ": " + this.getRank();
+        return text;
+    };
+    return Level;
+})(PublishedGameElement);
+
+/**
+* A Leaderboard of Gamers
+* Gamers can be added, sorted and depicted
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Leaderboard = (function (_super) {
     __extends(Leaderboard, _super);
     function Leaderboard(publisher, title, unit) {
@@ -154,10 +259,28 @@ var Leaderboard = (function (_super) {
     Leaderboard.prototype.toString = function () {
         var text = "<ol>";
         for (var i = 0; i < this.gamerList.length; ++i) {
-            text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
+            text += "<li>With <b>" + this.pointList[i].toString() + " " + this.unit + ": </b> " + this.gamerList[i].toString() + "</li>";
         }
         text += "</ol>";
         return text;
+    };
+
+    Leaderboard.prototype.toTrowArray = function () {
+        var trowArray = new Array();
+        for (var i = 0; i < this.gamerList.length; ++i) {
+            var tr = document.createElement('tr');
+            var points = document.createElement('td');
+            var place = document.createElement('td');
+            var gamer = document.createElement('th');
+            place.appendChild(document.createTextNode('' + (i + 1)));
+            gamer.appendChild(document.createTextNode('' + this.gamerList[i].toString()));
+            points.appendChild(document.createTextNode('' + this.pointList[i].toString()));
+            tr.appendChild(place);
+            tr.appendChild(gamer);
+            tr.appendChild(points);
+            trowArray.push(tr);
+        }
+        return trowArray;
     };
 
     Leaderboard.prototype.toStringUl = function () {
@@ -171,6 +294,12 @@ var Leaderboard = (function (_super) {
     return Leaderboard;
 })(PublishedGameElement);
 
+/**
+* Macht nichts, kann nichts, bringt nichts!
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Member = (function () {
     function Member(id, name, points) {
         this.id = id;
