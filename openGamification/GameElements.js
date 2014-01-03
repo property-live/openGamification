@@ -10,6 +10,17 @@ var User = (function () {
         this.password = password;
         this.name = name;
     }
+    User.fromJSON = function (json) {
+        var attributeArray = json.split(',', 3);
+        var id = +attributeArray[0].slice(6, attributeArray[0].length + 1);
+        var password = attributeArray[1].slice(12, attributeArray[1].length - 1);
+        var name = attributeArray[2].slice(8, attributeArray[2].length - 2);
+
+        //alert(id + '\n' + password + '\n' + name);
+        var user = new User(name, password);
+        user.id = id;
+        return user;
+    };
     User.prototype.getName = function () {
         return this.name;
     };
@@ -40,6 +51,13 @@ var Gamer = (function (_super) {
     Gamer.prototype.toString = function () {
         return this.name;
     };
+
+    Gamer.fromJSON = function (json) {
+        var user = User.fromJSON(json);
+        var gamer = new Gamer(user.name, user.password);
+        gamer.id = user.id;
+        return gamer;
+    };
     return Gamer;
 })(User);
 
@@ -54,6 +72,10 @@ var Publisher = (function (_super) {
     function Publisher(name, password) {
         _super.call(this, name, password);
     }
+    Publisher.fromJSON = function (json) {
+        return User.fromJSON(json);
+    };
+
     Publisher.prototype.getId = function () {
         return this.id;
     };
@@ -74,6 +96,9 @@ var GlobalGamifier = (function (_super) {
     function GlobalGamifier(name, password) {
         _super.call(this, name, password);
     }
+    GlobalGamifier.fromJSON = function (json) {
+        return Publisher.fromJSON(json);
+    };
     return GlobalGamifier;
 })(Publisher);
 
@@ -145,6 +170,16 @@ var Points = (function (_super) {
         this.value = value;
         this.unit = unit;
     }
+    Points.fromJSONandPublisher = function (json, publisher) {
+        var points;
+        var value;
+        var unit;
+        var attributeArray = json.split(',');
+        value = +attributeArray[0].substring(9, attributeArray[0].length);
+        unit = attributeArray[1].substring(8, attributeArray[1].length - 2);
+        points = new Points(publisher, value, unit);
+        return points;
+    };
     Points.prototype.toString = function () {
         return this.value;
     };
@@ -165,6 +200,10 @@ var Points = (function (_super) {
             this.value += value;
         }
     };
+
+    Points.prototype.getUnit = function () {
+        return this.unit;
+    };
     return Points;
 })(PublishedGameElement);
 
@@ -179,6 +218,8 @@ var Level = (function (_super) {
     __extends(Level, _super);
     function Level(publisher, value, rank) {
         _super.call(this, publisher);
+        this.rankBorder = [];
+        this.rank = [];
         this.index = 0;
         this.value = value;
         this.rank = rank;
@@ -220,6 +261,65 @@ var Leaderboard = (function (_super) {
         this.pointList = [];
         this.unit = unit;
     }
+    Leaderboard.fromJSON = function (json) {
+        var leaderboard;
+        var publisher;
+        var title;
+        var gamer;
+        var gamerList = [];
+        var pointList = [];
+        var points;
+        var unit;
+        var attributeArray = json.split('{');
+        var text = "";
+
+        // extract publisher and title
+        var secondaryArray = attributeArray[2].split('}');
+        publisher = Publisher.fromJSON('{' + secondaryArray[0] + '}');
+        title = secondaryArray[1].slice(10, secondaryArray[1].length - 15);
+
+        // extract gamerList
+        var text = json.substring(json.indexOf(',"gamerList":') + ',"gamerList":'.length + 1, json.indexOf(',"pointList":') - 1);
+        attributeArray = text.split('}');
+        for (var i = 0; i < attributeArray.length; i++) {
+            if (attributeArray[i].charAt(0) == ',') {
+                attributeArray[i] = attributeArray[i].substring(1, attributeArray[i].length);
+            }
+            if (attributeArray[i].length >= '{"id":0,"password":"0","name":"0"}'.length) {
+                gamer = Gamer.fromJSON(attributeArray[i] + '}');
+                gamerList.push(gamer);
+            }
+        }
+
+        // Extract pointList
+        var unitUnclear = true;
+        text = json.substring(json.indexOf(',"pointList":') + ',"pointList":'.length + 1, json.length);
+        attributeArray = text.split('}');
+        for (var i = 0; i < attributeArray.length; i++) {
+            if (attributeArray[i].charAt(0) == ',') {
+                attributeArray[i] = attributeArray[i].substring(1, attributeArray[i].length);
+            }
+            if (attributeArray[i].length >= '"value":0,"unit":"0"'.length) {
+                if (attributeArray[i].substring(0, 7).match('"value"')) {
+                    points = Points.fromJSONandPublisher('{' + attributeArray[i] + '}', publisher);
+                    pointList.push(points);
+                    if (unitUnclear) {
+                        unit = "" + points.getUnit();
+                        unitUnclear = false;
+                    }
+                }
+                //gamer = Gamer.fromJSON(attributeArray[i] + '}');
+                //pointList.push(gamer);
+                //gamerList.push(new Gamer(gamer.name, gamer.password));
+            }
+        }
+        leaderboard = new Leaderboard(publisher, title, unit);
+        for (var i = 0; i < gamerList.length; i++) {
+            leaderboard.addGamer(gamerList[i], pointList[i].getValue());
+        }
+        return leaderboard;
+    };
+
     Leaderboard.prototype.addGamer = function (newGamer, points) {
         this.gamerList.push(newGamer);
         this.pointList.push(new Points(this.publisher, points, this.unit));
@@ -276,6 +376,10 @@ var Leaderboard = (function (_super) {
         text += "</ul>";
         return text;
     };
+
+    Leaderboard.prototype.getPublisher = function () {
+        return this.publisher;
+    };
     return Leaderboard;
 })(PublishedGameElement);
 
@@ -319,4 +423,14 @@ var Member = (function () {
     };
     return Member;
 })();
+
+var Quest = (function (_super) {
+    __extends(Quest, _super);
+    function Quest(publisher, description, reward) {
+        _super.call(this, publisher);
+        this.description = description;
+        this.reward = reward;
+    }
+    return Quest;
+})(PublishedGameElement);
 //# sourceMappingURL=GameElements.js.map

@@ -5,47 +5,14 @@
 //import GameElements
 /// <reference path="./GameElements.ts"/>
 window.onload = function () {
-    addButtonListener();
-    Main.main();
-    $('#newGamerNameSubmit').on("click", function (event) {
-        alert('click');
+    $.getScript('./GameElements.js', function () {
+        Main.addButtonListener();
+        Main.main();
+        $('#newGamerNameSubmit').on("click", function (event) {
+            alert('click');
+        });
     });
 };
-
-function addButtonListener() {
-    $('#buttonHomeLeaderboard').on("click", function (event) {
-        $.mobile.changePage("#PageLeaderboard", { transition: "flip", changeHash: false });
-    });
-    $('#buttonHomeQuest').on("click", function (event) {
-        $.mobile.changePage("#PageQuest", { transition: "flip", changeHash: false });
-    });
-    $('#buttonLeaderboardHome').on("click", function (event) {
-        $.mobile.changePage("#PageHome", { transition: "fade", changeHash: false });
-    });
-    $('#buttonLeaderboardBack').on("click", function (event) {
-        $.mobile.changePage("#PageHome", { transition: "flip", changeHash: false });
-    });
-    $('#buttonQuestHome').on("click", function (event) {
-        $.mobile.changePage("#PageHome", { transition: "fade", changeHash: false });
-    });
-    $('#buttonQuestBack').on("click", function (event) {
-        $.mobile.changePage("#PageHome", { transition: "flip", changeHash: false });
-    });
-
-    $('#addRow').on("click", function (event) {
-        var auftrag = document.createTextNode('1234');
-        var th = document.createElement('th');
-        th.appendChild(auftrag);
-        var text = document.createTextNode('Alles kaputt!');
-        var td = document.createElement('td');
-        td.appendChild(text);
-        var trow = document.createElement('tr');
-        trow.appendChild(th);
-        trow.appendChild(td);
-        $("#LeaderboardList").append(trow);
-        //$('#MyList').empty();
-    });
-}
 
 var Main = (function () {
     function Main() {
@@ -83,17 +50,70 @@ var Main = (function () {
             htmlElementList.innerHTML += "<h4>The Gamers are published by " + this.leaderboard.getPublisher().toString();
             +"</h4>";
 
-            //print leaderboard
+            // sort leaderboard
             this.leaderboard.sort();
-            var htmlElementList = document.getElementById('leaderboard');
 
-            //htmlElementList.innerHTML += this.leaderboard.toString();
-            htmlElementList.innerHTML += "<h4>The Winners are published by " + this.leaderboard.getPublisher().toString();
+            // save leaderboard
+            localStorage.setItem('leaderboard', JSON.stringify(this.leaderboard));
+
+            Main.printLeaderboard();
+        });
+    };
+
+    Main.printLeaderboard = function () {
+        $.getScript('./GameElements.js', function () {
+            var leaderboard = Leaderboard.fromJSON(localStorage.getItem('leaderboard'));
+            $('#LeaderboardList').empty();
+            var htmlElementList = document.getElementById('leaderboard');
+            htmlElementList.innerHTML = "<h4>The Winners are published by " + leaderboard.getPublisher().toString();
             +"</h4>";
-            var trowArray = this.leaderboard.toTrowArray();
+            var trowArray = leaderboard.toTrowArray();
             for (var i = 0; i < trowArray.length; ++i) {
                 $('#LeaderboardList').append(trowArray[i]);
             }
+        });
+    };
+
+    Main.addButtonListener = function () {
+        $('#buttonHomeLeaderboard').on("click", function (event) {
+            $.mobile.changePage("#PageLeaderboard", { transition: "flip", changeHash: false });
+        });
+        $('#buttonHomeQuest').on("click", function (event) {
+            $.mobile.changePage("#PageQuest", { transition: "flip", changeHash: false });
+        });
+        $('#buttonLeaderboardHome').on("click", function (event) {
+            $.mobile.changePage("#PageHome", { transition: "fade", changeHash: false });
+        });
+        $('#buttonLeaderboardBack').on("click", function (event) {
+            $.mobile.changePage("#PageHome", { transition: "flip", changeHash: false });
+        });
+        $('#buttonQuestHome').on("click", function (event) {
+            $.mobile.changePage("#PageHome", { transition: "fade", changeHash: false });
+        });
+        $('#buttonQuestBack').on("click", function (event) {
+            $.mobile.changePage("#PageHome", { transition: "flip", changeHash: false });
+        });
+
+        $('#addRow').on("click", function (event) {
+            Main.printLeaderboard();
+        });
+
+        $('#newGamerSubmit').on("click", function (event) {
+            $.getScript('./GameElements.js', function () {
+                // load leaderboard
+                var leaderboard = Leaderboard.fromJSON(localStorage.getItem('leaderboard'));
+                var name = $('#newGamerName').val();
+                var password = $('#newGamerPassword').val();
+                var gamer = new Gamer(name, password);
+                leaderboard.addGamer(gamer, 0);
+                alert(name + "\n" + password);
+
+                // sort leaderboard
+                leaderboard.sort();
+
+                // save leaderboard
+                localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+            });
         });
     };
     return Main;
