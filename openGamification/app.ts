@@ -4,6 +4,7 @@
 /// <reference path="./Scripts/typings/jquerymobile/jquerymobile.d.ts"/>
 //import GameElements
 /// <reference path="./GameElements.ts"/>
+
 window.onload = () => {
     addButtonListener();
     Main.main();

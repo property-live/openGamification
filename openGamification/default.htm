@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -16,14 +15,17 @@
             <h1>TestApp for openGamification</h1>
             <a href="info.html" id="buttonP1Home" data-role="button" class="ui-btn-right" data-icon="info" data-inline="true" data-rel="dialog" data-transition="slidedown">Info</a>
         </header>
-        <ul data-role="listview" data-inset="true" data-theme="d" data-divider-theme="d">
-            <li data-role="list-divider">GameElement Tests</li>
-            <li><a id="buttonHomeLeaderboard" data-icon="arrow-r">Leaderboard Test</a></li>
-            <li><a id="buttonHomeQuest" data-icon="arrow-r">Quest Test</a></li>
-            
-            <li data-role="list-divider">Links that will refresh the page</li>
-            <li><a href="file:///S:/Workspaces/GitHub/openGamification/openGamification/default.htm">Call File</a></li>
-        </ul>
+        <body>
+            <ul data-role="listview" data-inset="true" data-theme="d" data-divider-theme="d">
+                <li data-role="list-divider">GameElement Tests</li>
+                <li><a id="buttonHomeLeaderboard" data-icon="arrow-r">Leaderboard Test</a></li>
+                <li><a id="buttonHomeQuest" data-icon="arrow-r">Quest Test</a></li>
+
+                <li data-role="list-divider">Links that will refresh the page</li>
+                <li><a href="file:///S:/Workspaces/GitHub/openGamification/openGamification/default.htm">Call File</a></li>
+            </ul>
+            <div id="progressbar" />
+        </body>
     </div>
     <div data-role="page" id="PageLeaderboard">
         <header data-role="header" data-theme="b">
@@ -40,7 +42,6 @@
                 <li><a href="methods.html" data-role="button" data-transition="fade" data-icon="delete">Clear Input</a>
                     <a data-role="button" id="newGamerNameSubmit" data-icon="plus">Add Gamer</a></li>
             </ul>
-            
         </div>
         <div data-role="collapsible" data-collapsed="true" data-theme="b" data-transition="fade">
             <h3>Gamer List</h3>

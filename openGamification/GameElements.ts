@@ -8,24 +8,19 @@ class User {
         this.password = password;
         this.name = name;
     }
-
     public getName() {
         return this.name;
     }
-
     public getId() {
         return this.id;
     }
-
     public setName(name: String) {
         this.name = name;
     }
-
     public toString() {
         return this.name;
     }
 }
-
 /**
  * The gaming user of your application
  *
@@ -41,7 +36,6 @@ class Gamer extends User {
         return this.name;
     }
 }
-
 /**
  * Any Publisher. A publisher has things like Leaderboards with Points and other cool stuff for Gamers
  *
@@ -52,16 +46,13 @@ class Publisher extends User {
     constructor(name: String, password: String) {
         super(name, password);
     }
-
     public getId() {
         return this.id;
     }
-
     public getName() {
         return this.name;
     }
 }
-
 /**
  * The main gamificator
  *
@@ -73,7 +64,6 @@ class GlobalGamifier extends Publisher {
         super(name, password);
     }
 }
-
 /**
  * A general GameElement class, which is extended by Published GameElement and GlobalGameElement
  *
@@ -82,16 +72,13 @@ class GlobalGamifier extends Publisher {
  */
 class GameElement {
     gamerList: Gamer[];
-
     public getGamer(index: number) {
         return this.gamerList[index];
     }
-
     public getGamerList() {
         return this.gamerList;
     }
 }
-
 /**
  * GameElements which can be published by any Publisher
  *
@@ -104,12 +91,10 @@ class PublishedGameElement extends GameElement {
         super();
         this.publisher = publisher;
     }
-
     public getPublisher() {
         return this.publisher;
     }
 }
-
 /**
  * GameElement registered by the main publisher (GlobalGamifier)
  *
@@ -122,12 +107,10 @@ class GlobalGameElement extends GameElement {
         super();
         this.publisher = publisher;
     }
-
     public getPublisher() {
         return this.publisher;
     }
 }
-
 /**
  * Points of any type
  *
@@ -137,22 +120,18 @@ class GlobalGameElement extends GameElement {
 class Points extends PublishedGameElement {
     private value: number;
     private unit: String;
-
     constructor(publisher: Publisher, value: number, unit: String) {
         super(publisher);
         this.publisher = publisher;
         this.value = value;
         this.unit = unit;
     }
-
     public toString() {
         return this.value;
     }
-
     public getValue() {
         return this.value;
     }
-
     public increaseValue(value: number) {
         if (value > 0) {
             this.value += value;
@@ -161,7 +140,6 @@ class Points extends PublishedGameElement {
             this.value -= value;
         }
     }
-
     public decreaseValue(value: number) {
         if (value > 0) {
             this.value -= value;
@@ -171,7 +149,6 @@ class Points extends PublishedGameElement {
         }
     }
 }
-
 /**
  * Levels are, in a way, Points that can only be increased
  * When reaching a specific Level you increase your rank
@@ -184,35 +161,29 @@ class Level extends PublishedGameElement {
     private rankBorder: number[];
     private rank: string[];
     private index = 0;
-
     constructor(publisher: Publisher, value: number, rank: string[]) {
         super(publisher);
         this.value = value;
         this.rank = rank;
     }
-
     public increase() {
         this.value++;
         if (this.value >= this.rankBorder[this.index]) {
             this.index++;
         }
     }
-
     public getValue() {
         return this.value;
     }
-
     public getRank(){
         return this.rank[this.index]
     }
-
     public toString() {
         var text = "";
         text += this.getValue() + ": " + this.getRank();
         return text;
     }
 }
-
 /**
  * A Leaderboard of Gamers
  * Gamers can be added, sorted and depicted
@@ -225,7 +196,6 @@ class Leaderboard extends PublishedGameElement {
     pointList: Points[];
     gamerList: Gamer[];
     unit: String;
-
     constructor(publisher: Publisher, title: String, unit: String = "points") {
         super(publisher);
         this.title = title;
@@ -233,12 +203,10 @@ class Leaderboard extends PublishedGameElement {
         this.pointList = [];
         this.unit = unit;
     }
-
     public addGamer(newGamer: Gamer, points: number) {
         this.gamerList.push(newGamer);
         this.pointList.push(new Points(this.publisher, points, this.unit));
     }
-
     public sort() {
         //bubblesort
         var swap = true;
@@ -258,7 +226,6 @@ class Leaderboard extends PublishedGameElement {
             }
         }
     }
-
     public toString() {
         var text = "<ol>";
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -267,7 +234,6 @@ class Leaderboard extends PublishedGameElement {
         text += "</ol>";
         return text;
     }
-
     public toTrowArray() {
         var trowArray = new Array();
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -285,7 +251,6 @@ class Leaderboard extends PublishedGameElement {
         }
         return trowArray;
     }
-
     public toStringUl() {
         var text = "<ul>";
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -295,7 +260,6 @@ class Leaderboard extends PublishedGameElement {
         return text;
     }
 }
-
 /**
  * Macht nichts, kann nichts, bringt nichts!
  *
@@ -311,35 +275,27 @@ class Member {
         this.name = name;
         this.points = points;
     }
-
     public getPoints() {
         return this.points;
     }
-
     public getName() {
         return this.name;
     }
-
     public getId() {
         return this.id;
     }
-
     public setName(name: String) {
         this.name = name;
     }
-
     public setPoints(points: number) {
         this.points = points;
     }
-
     public addPoints(points: number) {
         this.points += points;
     }
-
     public removePoints(points: number) {
         this.points -= points;
     }
-
     public toString() {
         var text = "";
         text += this.name + ": " + this.points.toString();

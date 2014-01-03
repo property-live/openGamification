@@ -13,15 +13,12 @@ var User = (function () {
     User.prototype.getName = function () {
         return this.name;
     };
-
     User.prototype.getId = function () {
         return this.id;
     };
-
     User.prototype.setName = function (name) {
         this.name = name;
     };
-
     User.prototype.toString = function () {
         return this.name;
     };
@@ -60,7 +57,6 @@ var Publisher = (function (_super) {
     Publisher.prototype.getId = function () {
         return this.id;
     };
-
     Publisher.prototype.getName = function () {
         return this.name;
     };
@@ -93,7 +89,6 @@ var GameElement = (function () {
     GameElement.prototype.getGamer = function (index) {
         return this.gamerList[index];
     };
-
     GameElement.prototype.getGamerList = function () {
         return this.gamerList;
     };
@@ -153,11 +148,9 @@ var Points = (function (_super) {
     Points.prototype.toString = function () {
         return this.value;
     };
-
     Points.prototype.getValue = function () {
         return this.value;
     };
-
     Points.prototype.increaseValue = function (value) {
         if (value > 0) {
             this.value += value;
@@ -165,7 +158,6 @@ var Points = (function (_super) {
             this.value -= value;
         }
     };
-
     Points.prototype.decreaseValue = function (value) {
         if (value > 0) {
             this.value -= value;
@@ -197,15 +189,12 @@ var Level = (function (_super) {
             this.index++;
         }
     };
-
     Level.prototype.getValue = function () {
         return this.value;
     };
-
     Level.prototype.getRank = function () {
         return this.rank[this.index];
     };
-
     Level.prototype.toString = function () {
         var text = "";
         text += this.getValue() + ": " + this.getRank();
@@ -235,7 +224,6 @@ var Leaderboard = (function (_super) {
         this.gamerList.push(newGamer);
         this.pointList.push(new Points(this.publisher, points, this.unit));
     };
-
     Leaderboard.prototype.sort = function () {
         //bubblesort
         var swap = true;
@@ -255,7 +243,6 @@ var Leaderboard = (function (_super) {
             }
         }
     };
-
     Leaderboard.prototype.toString = function () {
         var text = "<ol>";
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -264,7 +251,6 @@ var Leaderboard = (function (_super) {
         text += "</ol>";
         return text;
     };
-
     Leaderboard.prototype.toTrowArray = function () {
         var trowArray = new Array();
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -282,7 +268,6 @@ var Leaderboard = (function (_super) {
         }
         return trowArray;
     };
-
     Leaderboard.prototype.toStringUl = function () {
         var text = "<ul>";
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -309,31 +294,24 @@ var Member = (function () {
     Member.prototype.getPoints = function () {
         return this.points;
     };
-
     Member.prototype.getName = function () {
         return this.name;
     };
-
     Member.prototype.getId = function () {
         return this.id;
     };
-
     Member.prototype.setName = function (name) {
         this.name = name;
     };
-
     Member.prototype.setPoints = function (points) {
         this.points = points;
     };
-
     Member.prototype.addPoints = function (points) {
         this.points += points;
     };
-
     Member.prototype.removePoints = function (points) {
         this.points -= points;
     };
-
     Member.prototype.toString = function () {
         var text = "";
         text += this.name + ": " + this.points.toString();
