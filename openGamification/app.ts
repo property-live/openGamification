@@ -66,6 +66,8 @@ class Main {
     public static printLeaderboard() {
         $.getScript('./GameElements.js', function () {
             var leaderboard: Leaderboard = Leaderboard.fromJSON(localStorage.getItem('leaderboard'));
+            // sort the Leaderboard
+            leaderboard.sort();
             $('#LeaderboardList').empty();
             var htmlElementList = document.getElementById('leaderboard');
             htmlElementList.innerHTML = "<h4>The Winners are published by " + leaderboard.getPublisher().toString(); + "</h4>";
@@ -96,7 +98,7 @@ class Main {
             $.mobile.changePage("#PageHome", { transition: "flip", changeHash: false });
         });
 
-        $('#addRow').on("click", function (event) {
+        $('#updateLeaderboard').on("click", function (event) {
             Main.printLeaderboard();
         });
 

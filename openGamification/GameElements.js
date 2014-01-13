@@ -16,7 +16,6 @@ var User = (function () {
         var password = attributeArray[1].slice(12, attributeArray[1].length - 1);
         var name = attributeArray[2].slice(8, attributeArray[2].length - 2);
 
-        //alert(id + '\n' + password + '\n' + name);
         var user = new User(name, password);
         user.id = id;
         return user;
@@ -37,12 +36,6 @@ var User = (function () {
     return User;
 })();
 
-/**
-* The gaming user of your application
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var Gamer = (function (_super) {
     __extends(Gamer, _super);
     function Gamer(name, password) {
@@ -61,12 +54,6 @@ var Gamer = (function (_super) {
     return Gamer;
 })(User);
 
-/**
-* Any Publisher. A publisher has things like Leaderboards with Points and other cool stuff for Gamers
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var Publisher = (function (_super) {
     __extends(Publisher, _super);
     function Publisher(name, password) {
@@ -85,12 +72,6 @@ var Publisher = (function (_super) {
     return Publisher;
 })(User);
 
-/**
-* The main gamificator
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var GlobalGamifier = (function (_super) {
     __extends(GlobalGamifier, _super);
     function GlobalGamifier(name, password) {
@@ -102,12 +83,6 @@ var GlobalGamifier = (function (_super) {
     return GlobalGamifier;
 })(Publisher);
 
-/**
-* A general GameElement class, which is extended by Published GameElement and GlobalGameElement
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var GameElement = (function () {
     function GameElement() {
     }
@@ -120,12 +95,6 @@ var GameElement = (function () {
     return GameElement;
 })();
 
-/**
-* GameElements which can be published by any Publisher
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var PublishedGameElement = (function (_super) {
     __extends(PublishedGameElement, _super);
     function PublishedGameElement(publisher) {
@@ -138,12 +107,6 @@ var PublishedGameElement = (function (_super) {
     return PublishedGameElement;
 })(GameElement);
 
-/**
-* GameElement registered by the main publisher (GlobalGamifier)
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var GlobalGameElement = (function (_super) {
     __extends(GlobalGameElement, _super);
     function GlobalGameElement(publisher) {
@@ -156,12 +119,6 @@ var GlobalGameElement = (function (_super) {
     return GlobalGameElement;
 })(GameElement);
 
-/**
-* Points of any type
-*
-* @author property-live
-* @version 2013.12.31
-*/
 var Points = (function (_super) {
     __extends(Points, _super);
     function Points(publisher, value, unit) {
@@ -207,13 +164,6 @@ var Points = (function (_super) {
     return Points;
 })(PublishedGameElement);
 
-/**
-* Levels are, in a way, Points that can only be increased
-* When reaching a specific Level you increase your rank
-*
-* @author property-live
-* @version 2013.12.31
-*/
 var Level = (function (_super) {
     __extends(Level, _super);
     function Level(publisher, value, rank) {
@@ -244,13 +194,6 @@ var Level = (function (_super) {
     return Level;
 })(PublishedGameElement);
 
-/**
-* A Leaderboard of Gamers
-* Gamers can be added, sorted and depicted
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var Leaderboard = (function (_super) {
     __extends(Leaderboard, _super);
     function Leaderboard(publisher, title, unit) {
@@ -273,12 +216,10 @@ var Leaderboard = (function (_super) {
         var attributeArray = json.split('{');
         var text = "";
 
-        // extract publisher and title
         var secondaryArray = attributeArray[2].split('}');
         publisher = Publisher.fromJSON('{' + secondaryArray[0] + '}');
         title = secondaryArray[1].slice(10, secondaryArray[1].length - 15);
 
-        // extract gamerList
         var text = json.substring(json.indexOf(',"gamerList":') + ',"gamerList":'.length + 1, json.indexOf(',"pointList":') - 1);
         attributeArray = text.split('}');
         for (var i = 0; i < attributeArray.length; i++) {
@@ -291,7 +232,6 @@ var Leaderboard = (function (_super) {
             }
         }
 
-        // Extract pointList
         var unitUnclear = true;
         text = json.substring(json.indexOf(',"pointList":') + ',"pointList":'.length + 1, json.length);
         attributeArray = text.split('}');
@@ -308,9 +248,6 @@ var Leaderboard = (function (_super) {
                         unitUnclear = false;
                     }
                 }
-                //gamer = Gamer.fromJSON(attributeArray[i] + '}');
-                //pointList.push(gamer);
-                //gamerList.push(new Gamer(gamer.name, gamer.password));
             }
         }
         leaderboard = new Leaderboard(publisher, title, unit);
@@ -325,7 +262,6 @@ var Leaderboard = (function (_super) {
         this.pointList.push(new Points(this.publisher, points, this.unit));
     };
     Leaderboard.prototype.sort = function () {
-        //bubblesort
         var swap = true;
         var sortedList = this.gamerList;
         while (swap == true) {
@@ -383,12 +319,6 @@ var Leaderboard = (function (_super) {
     return Leaderboard;
 })(PublishedGameElement);
 
-/**
-* Macht nichts, kann nichts, bringt nichts!
-*
-* @author property-live
-* @version 2013.11.29
-*/
 var Member = (function () {
     function Member(id, name, points) {
         this.id = id;
@@ -433,4 +363,3 @@ var Quest = (function (_super) {
     }
     return Quest;
 })(PublishedGameElement);
-//# sourceMappingURL=GameElements.js.map

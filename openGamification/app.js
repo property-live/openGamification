@@ -1,9 +1,3 @@
-//import jQuery
-/// <reference path="./Scripts/typings/jquery/jquery.d.ts"/>
-//import jQuery Mobile
-/// <reference path="./Scripts/typings/jquerymobile/jquerymobile.d.ts"/>
-//import GameElements
-/// <reference path="./GameElements.ts"/>
 window.onload = function () {
     $.getScript('./GameElements.js', function () {
         Main.addButtonListener();
@@ -19,7 +13,6 @@ var Main = (function () {
     }
     Main.main = function () {
         $.getScript('./GameElements.js', function () {
-            // Leaderboard test
             this.publisher = new Publisher("UBIweich", "sicher");
             this.leaderboard = new Leaderboard(this.publisher, "VorlesungsLeader", "xp");
 
@@ -44,16 +37,13 @@ var Main = (function () {
             this.gamer = new Gamer("Dans", "passdort");
             this.leaderboard.addGamer(this.gamer, Math.floor(Math.random() * 100));
 
-            //print gamerlist
             var htmlElementList = document.getElementById('gamerList');
             htmlElementList.innerHTML += this.leaderboard.toStringUl();
             htmlElementList.innerHTML += "<h4>The Gamers are published by " + this.leaderboard.getPublisher().toString();
             +"</h4>";
 
-            // sort leaderboard
             this.leaderboard.sort();
 
-            // save leaderboard
             localStorage.setItem('leaderboard', JSON.stringify(this.leaderboard));
 
             Main.printLeaderboard();
@@ -63,6 +53,8 @@ var Main = (function () {
     Main.printLeaderboard = function () {
         $.getScript('./GameElements.js', function () {
             var leaderboard = Leaderboard.fromJSON(localStorage.getItem('leaderboard'));
+
+            leaderboard.sort();
             $('#LeaderboardList').empty();
             var htmlElementList = document.getElementById('leaderboard');
             htmlElementList.innerHTML = "<h4>The Winners are published by " + leaderboard.getPublisher().toString();
@@ -94,13 +86,12 @@ var Main = (function () {
             $.mobile.changePage("#PageHome", { transition: "flip", changeHash: false });
         });
 
-        $('#addRow').on("click", function (event) {
+        $('#updateLeaderboard').on("click", function (event) {
             Main.printLeaderboard();
         });
 
         $('#newGamerSubmit').on("click", function (event) {
             $.getScript('./GameElements.js', function () {
-                // load leaderboard
                 var leaderboard = Leaderboard.fromJSON(localStorage.getItem('leaderboard'));
                 var name = $('#newGamerName').val();
                 var password = $('#newGamerPassword').val();
@@ -108,14 +99,11 @@ var Main = (function () {
                 leaderboard.addGamer(gamer, 0);
                 alert(name + "\n" + password);
 
-                // sort leaderboard
                 leaderboard.sort();
 
-                // save leaderboard
                 localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
             });
         });
     };
     return Main;
 })();
-//# sourceMappingURL=app.js.map
