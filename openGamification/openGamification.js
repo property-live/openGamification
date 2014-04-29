@@ -4,6 +4,12 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+/**
+* The abstract user of your application
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var User = (function () {
     function User(name, password) {
         this.id = User.usercount++;
@@ -16,6 +22,7 @@ var User = (function () {
         var password = attributeArray[1].slice(12, attributeArray[1].length - 1);
         var name = attributeArray[2].slice(8, attributeArray[2].length - 2);
 
+        //alert(id + '\n' + password + '\n' + name);
         var user = new User(name, password);
         user.id = id;
         return user;
@@ -36,6 +43,12 @@ var User = (function () {
     return User;
 })();
 
+/**
+* The gaming user of your application
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Gamer = (function (_super) {
     __extends(Gamer, _super);
     function Gamer(name, password) {
@@ -54,6 +67,13 @@ var Gamer = (function (_super) {
     return Gamer;
 })(User);
 
+/**
+* Any Publisher. A publisher has things like Leaderboards
+* with Points and other cool stuff for Gamers
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Publisher = (function (_super) {
     __extends(Publisher, _super);
     function Publisher(name, password) {
@@ -72,6 +92,13 @@ var Publisher = (function (_super) {
     return Publisher;
 })(User);
 
+/**
+* The main gamificator
+*
+* @author property-live
+* @version 2013.11.29
+* @deprecated
+*/
 var GlobalGamifier = (function (_super) {
     __extends(GlobalGamifier, _super);
     function GlobalGamifier(name, password) {
@@ -83,6 +110,12 @@ var GlobalGamifier = (function (_super) {
     return GlobalGamifier;
 })(Publisher);
 
+/**
+* A general GameElement class, which is extended by Published GameElement and GlobalGameElement
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var GameElement = (function () {
     function GameElement() {
     }
@@ -95,6 +128,12 @@ var GameElement = (function () {
     return GameElement;
 })();
 
+/**
+* GameElements which can be published by any Publisher
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var PublishedGameElement = (function (_super) {
     __extends(PublishedGameElement, _super);
     function PublishedGameElement(publisher) {
@@ -107,6 +146,12 @@ var PublishedGameElement = (function (_super) {
     return PublishedGameElement;
 })(GameElement);
 
+/**
+* GameElement registered by the main publisher (GlobalGamifier)
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var GlobalGameElement = (function (_super) {
     __extends(GlobalGameElement, _super);
     function GlobalGameElement(publisher) {
@@ -119,15 +164,31 @@ var GlobalGameElement = (function (_super) {
     return GlobalGameElement;
 })(GameElement);
 
+/**
+* Points are a core mechanic of most of gamification applications.
+* They may be uses as traditional points to indicate status but also
+* as virtual currencies like for example lunch points.
+*
+* @author property-live
+* @version 2013.12.31
+*/
 var Points = (function (_super) {
     __extends(Points, _super);
+    /**
+    *
+    **/
     function Points(publisher, value, unit) {
+        if (typeof value === "undefined") { value = 0; }
+        if (typeof unit === "undefined") { unit = "Points"; }
         _super.call(this, publisher);
         this.publisher = publisher;
         this.value = value;
         this.unit = unit;
     }
-    Points.fromJSONandPublisher = function (json, publisher) {
+    Points.fromJSONandPublisher = /**
+    * Generates a Point object out of a json string and a publisher object.
+    **/
+    function (json, publisher) {
         var points;
         var value;
         var unit;
@@ -137,12 +198,28 @@ var Points = (function (_super) {
         points = new Points(publisher, value, unit);
         return points;
     };
+
+    /**
+    * returns: value (String)
+    **/
     Points.prototype.toString = function () {
-        return this.value;
+        return "" + this.value;
     };
+
+    /**
+    * returns: value (number)
+    **/
     Points.prototype.getValue = function () {
         return this.value;
     };
+
+    /**
+    * increases the value of the points by
+    *
+    * value: number - the value by which the points shall be decreased.
+    *                 Has to be positive
+    * returns: nothing
+    **/
     Points.prototype.increaseValue = function (value) {
         if (value > 0) {
             this.value += value;
@@ -150,6 +227,14 @@ var Points = (function (_super) {
             this.value -= value;
         }
     };
+
+    /**
+    * decreases the value of the points by
+    *
+    * value: number - the value by which the points shall be decreased.
+    *                 Has to be positive
+    * returns: nothing
+    **/
     Points.prototype.decreaseValue = function (value) {
         if (value > 0) {
             this.value -= value;
@@ -158,42 +243,88 @@ var Points = (function (_super) {
         }
     };
 
+    /**
+    * Used to get the unit of the points
+    *
+    * returns: the string describing the unit
+    **/
     Points.prototype.getUnit = function () {
         return this.unit;
     };
     return Points;
 })(PublishedGameElement);
 
+/**
+* Levels are, in a way, Points that can only be increased
+* When reaching a specific Level you increase your rank
+*
+* @author property-live
+* @version 2013.12.31
+*/
 var Level = (function (_super) {
     __extends(Level, _super);
-    function Level(publisher, value, rank) {
+    function Level(publisher, rankList, rankBorderList, value, unit) {
+        if (typeof value === "undefined") { value = 0; }
+        if (typeof unit === "undefined") { unit = "XP"; }
         _super.call(this, publisher);
-        this.rankBorder = [];
-        this.rank = [];
+        this.rankBorderList = [];
+        this.rankList = [];
         this.index = 0;
-        this.value = value;
-        this.rank = rank;
+        this.unit = unit;
+        this.rankList = rankList;
+        this.rankBorderList = rankBorderList;
+        this.value = 0;
+        this.increase(value);
     }
-    Level.prototype.increase = function () {
-        this.value++;
-        if (this.value >= this.rankBorder[this.index]) {
+    Level.prototype.increase = function (value) {
+        this.value += value;
+        while (this.value >= this.rankBorderList[this.index] && this.index < this.rankList.length) {
             this.index++;
         }
     };
+
     Level.prototype.getValue = function () {
         return this.value;
     };
-    Level.prototype.getRank = function () {
-        return this.rank[this.index];
+
+    Level.prototype.getUnit = function () {
+        return this.unit;
     };
+
+    Level.prototype.getRank = function () {
+        return this.rankList[this.index];
+    };
+
+    Level.prototype.getNextBorder = function () {
+        return this.rankBorderList[this.index];
+    };
+
+    Level.fromJSON = function () {
+        alert('Class signature has changed. Need to rewrite');
+    };
+    Level.prototype.getRankAt = function (index) {
+        return this.rankList[index];
+    };
+
+    Level.prototype.getNextRank = function () {
+        return this.rankBorderList[(this.index + 1)];
+    };
+
     Level.prototype.toString = function () {
         var text = "";
-        text += this.getValue() + ": " + this.getRank();
+        text += this.getValue() + " " + this.unit + ": " + this.getRank();
         return text;
     };
     return Level;
 })(PublishedGameElement);
 
+/**
+* A Leaderboard of Gamers
+* Gamers can be added, sorted and depicted
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Leaderboard = (function (_super) {
     __extends(Leaderboard, _super);
     function Leaderboard(publisher, title, unit) {
@@ -216,10 +347,12 @@ var Leaderboard = (function (_super) {
         var attributeArray = json.split('{');
         var text = "";
 
+        // extract publisher and title
         var secondaryArray = attributeArray[2].split('}');
         publisher = Publisher.fromJSON('{' + secondaryArray[0] + '}');
         title = secondaryArray[1].slice(10, secondaryArray[1].length - 15);
 
+        // extract gamerList
         var text = json.substring(json.indexOf(',"gamerList":') + ',"gamerList":'.length + 1, json.indexOf(',"pointList":') - 1);
         attributeArray = text.split('}');
         for (var i = 0; i < attributeArray.length; i++) {
@@ -232,6 +365,7 @@ var Leaderboard = (function (_super) {
             }
         }
 
+        // Extract pointList
         var unitUnclear = true;
         text = json.substring(json.indexOf(',"pointList":') + ',"pointList":'.length + 1, json.length);
         attributeArray = text.split('}');
@@ -258,16 +392,18 @@ var Leaderboard = (function (_super) {
     };
 
     Leaderboard.prototype.addGamer = function (newGamer, points) {
+        if (typeof points === "undefined") { points = 0; }
         this.gamerList.push(newGamer);
         this.pointList.push(new Points(this.publisher, points, this.unit));
     };
     Leaderboard.prototype.sort = function () {
+        //bubblesort
         var swap = true;
         var sortedList = this.gamerList;
         while (swap == true) {
             swap = false;
             for (var i = 0; i < this.pointList.length - 1; i++) {
-                if (this.pointList[i] < this.pointList[i + 1]) {
+                if (this.pointList[i].getValue() < this.pointList[i + 1].getValue()) {
                     var tempPoint = this.pointList[i];
                     var tempGamer = this.gamerList[i];
                     this.pointList[i] = this.pointList[i + 1];
@@ -304,6 +440,7 @@ var Leaderboard = (function (_super) {
         }
         return trowArray;
     };
+
     Leaderboard.prototype.toStringUl = function () {
         var text = "<ul>";
         for (var i = 0; i < this.gamerList.length; ++i) {
@@ -313,12 +450,27 @@ var Leaderboard = (function (_super) {
         return text;
     };
 
+    Leaderboard.prototype.toStringOl = function () {
+        var text = "<ol>";
+        for (var i = 0; i < this.gamerList.length; ++i) {
+            text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
+        }
+        text += "</ol>";
+        return text;
+    };
+
     Leaderboard.prototype.getPublisher = function () {
         return this.publisher;
     };
     return Leaderboard;
 })(PublishedGameElement);
 
+/**
+* Macht nichts, kann nichts, bringt nichts!
+*
+* @author property-live
+* @version 2013.11.29
+*/
 var Member = (function () {
     function Member(id, name, points) {
         this.id = id;
@@ -358,8 +510,132 @@ var Quest = (function (_super) {
     __extends(Quest, _super);
     function Quest(publisher, description, reward) {
         _super.call(this, publisher);
+        this.gamer = [];
+        this.rewards = [];
         this.description = description;
-        this.reward = reward;
+        this.rewards.push(reward);
     }
+    Quest.prototype.addReward = function (reward) {
+        this.rewards.push(reward);
+    };
+
+    Quest.fromJSON = function () {
+        alert('Class signature has changed. Need to rewrite');
+    };
+
+    Quest.prototype.toString = function () {
+        var text = "";
+        text += "Quest Master: " + this.publisher.toString() + "\n<br/>" + "Title: " + this.title + "\n<br/>" + "Description: " + this.description + "\n<br/>" + "Rewards: " + "\n<br/>";
+        for (var i = 0; i < this.rewards.length; i++) {
+            text += this.rewards[i].toString() + " ";
+            text += this.rewards[i].getUnit() + "\n<br/>";
+        }
+        return text;
+    };
     return Quest;
 })(PublishedGameElement);
+
+var Achievement = (function (_super) {
+    __extends(Achievement, _super);
+    function Achievement(publisher, title, description, pictures) {
+        _super.call(this, publisher);
+        this.gamer = [];
+        this.states = ["hidden", "showing", "unlocked"];
+        this.pictures = [];
+        this.title = title;
+        this.description = description;
+        this.status = 0;
+        for (var i = 0; i < pictures.length; i++) {
+            this.pictures.push(pictures[i]);
+        }
+    }
+    Achievement.fromJSON = function (json) {
+        // object to return
+        var achievement;
+
+        // attributes to extract
+        var publisher;
+        var gamer = [];
+        var states = [];
+        var pictures = [];
+        var title;
+        var description;
+        var status;
+
+        // elements for extraction
+        var attributeArray = json.split('{');
+        var text = "";
+
+        // extract publisher
+        var secondaryArray = attributeArray[2].split('}');
+        publisher = Publisher.fromJSON('{' + secondaryArray[0] + '}');
+
+        // extract gamer list
+        var text = json.substring(json.indexOf(',"gamer":') + ',"gamer":'.length + 1, json.indexOf(',"states":') - 1);
+        attributeArray = text.split('}');
+        for (var i = 0; i < attributeArray.length; i++) {
+            if (attributeArray[i].charAt(0) == ',') {
+                attributeArray[i] = attributeArray[i].substring(1, attributeArray[i].length);
+            }
+            if (attributeArray[i].length >= '{"id":0,"password":"0","name":"0"}'.length) {
+                gamer.push(Gamer.fromJSON(attributeArray[i] + '}'));
+            }
+        }
+
+        // extract states
+        text = json.substring(json.indexOf(',"states":') + ',"states":'.length, json.indexOf(',"pictures":') - 1);
+        attributeArray = text.split('"');
+        for (var i = 1; i < attributeArray.length; i += 2) {
+            states.push(attributeArray[i]);
+        }
+
+        // extract pictures
+        text = json.substring(json.indexOf(',"pictures":["') + ',"pictures":["'.length, json.indexOf('"],"title":"'));
+
+        // replace \\\" with \"
+        text = text.split('\\\"').join('\"');
+
+        // replace ","\ with ,
+        text = text.split('","').join(',');
+
+        attributeArray = text.split(',');
+        for (var i = 0; i < attributeArray.length; i++) {
+            pictures.push(attributeArray[i]);
+        }
+
+        // extract title
+        text = json.substring(json.indexOf(',"title":"') + ',"title":"'.length, json.indexOf('","description":'));
+        title = text;
+
+        // extract description
+        text = json.substring(json.indexOf(',"description":"') + ',"description":"'.length, json.indexOf('","status":'));
+        description = text;
+
+        // extract status
+        text = json.substring(json.indexOf(',"status":') + ',"status":'.length, json.length - 1);
+        status = parseInt(text);
+
+        // create achievement
+        achievement = new Achievement(publisher, title, description, pictures);
+        achievement.gamer = gamer;
+        achievement.states = states;
+        achievement.status = status;
+
+        // return achievement
+        return achievement;
+    };
+
+    Achievement.prototype.toString = function () {
+        return this.pictures[this.status];
+    };
+
+    Achievement.prototype.setStatus = function (status) {
+        this.status = status;
+    };
+
+    Achievement.prototype.getStatus = function () {
+        return this.status;
+    };
+    return Achievement;
+})(PublishedGameElement);
+//# sourceMappingURL=openGamification.js.map

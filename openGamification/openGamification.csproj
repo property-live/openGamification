@@ -19,7 +19,7 @@
     <Content Include="app.css" />
     <Content Include="default.htm" />
     <Content Include="web.config" />
-    <TypeScriptCompile Include="GameElements.ts" />
+    <TypeScriptCompile Include="openGamification.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquerymobile\jquerymobile.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>

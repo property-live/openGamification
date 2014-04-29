@@ -1,3 +1,9 @@
+/**
+ * The abstract user of your application
+ *
+ * @author property-live
+ * @version 2013.11.29
+ */
 class User {
     static usercount: number = 0;
     id: number;
@@ -55,7 +61,8 @@ class Gamer extends User {
     }
 }
 /**
- * Any Publisher. A publisher has things like Leaderboards with Points and other cool stuff for Gamers
+ * Any Publisher. A publisher has things like Leaderboards 
+ * with Points and other cool stuff for Gamers
  *
  * @author property-live
  * @version 2013.11.29
@@ -81,6 +88,7 @@ class Publisher extends User {
  *
  * @author property-live
  * @version 2013.11.29
+ * @deprecated
  */
 class GlobalGamifier extends Publisher {
     constructor(name: String, password: String) {
@@ -142,7 +150,9 @@ class GlobalGameElement extends GameElement {
 }
 
 /**
- * Points of any type
+ * Points are a core mechanic of most of gamification applications. 
+ * They may be uses as traditional points to indicate status but also 
+ * as virtual currencies like for example lunch points.
  *
  * @author property-live
  * @version 2013.12.31
@@ -150,13 +160,20 @@ class GlobalGameElement extends GameElement {
 class Points extends PublishedGameElement {
     private value: number;
     private unit: String;
-    constructor(publisher: Publisher, value: number, unit: String) {
+
+    /** 
+      * 
+    **/ 
+    constructor(publisher: Publisher, value: number = 0, unit: String = "Points") {
         super(publisher);
         this.publisher = publisher;
         this.value = value;
         this.unit = unit;
     }
 
+    /** 
+      * Generates a Point object out of a json string and a publisher object.
+    **/ 
     public static fromJSONandPublisher(json: string, publisher: Publisher) {
         var points: Points;
         var value:number;
@@ -167,12 +184,28 @@ class Points extends PublishedGameElement {
         points = new Points(publisher, value, unit);
         return points;
     }
+
+    /** 
+      * returns: value (String)
+    **/ 
     public toString() {
-        return this.value;
+        return ""+this.value;
     }
+
+    /** 
+      * returns: value (number)
+    **/ 
     public getValue() {
         return this.value;
     }
+
+    /** 
+      * increases the value of the points by 
+      *
+      * value: number - the value by which the points shall be decreased. 
+      *                 Has to be positive
+      * returns: nothing
+    **/ 
     public increaseValue(value: number) {
         if (value > 0) {
             this.value += value;
@@ -181,6 +214,14 @@ class Points extends PublishedGameElement {
             this.value -= value;
         }
     }
+
+    /** 
+      * decreases the value of the points by 
+      *
+      * value: number - the value by which the points shall be decreased.
+      *                 Has to be positive
+      * returns: nothing
+    **/ 
     public decreaseValue(value: number) {
         if (value > 0) {
             this.value -= value;
@@ -189,7 +230,11 @@ class Points extends PublishedGameElement {
             this.value += value;
         }
     }
-
+    /** 
+      * Used to get the unit of the points
+      *
+      * returns: the string describing the unit
+    **/ 
     public getUnit() {
         return this.unit;
     }
@@ -204,29 +249,55 @@ class Points extends PublishedGameElement {
  */
 class Level extends PublishedGameElement {
     private value: number;
-    private rankBorder: number[] = [];
-    private rank: string[] = [];
+    private unit: string;
+    private rankBorderList: number[] = [];
+    private rankList: string[] = [];
     private index = 0;
-    constructor(publisher: Publisher, value: number, rank: string[]) {
+    constructor(publisher: Publisher, rankList: string[], rankBorderList: number[], value: number= 0, unit: string = "XP"){
         super(publisher);
-        this.value = value;
-        this.rank = rank;
+        this.unit = unit;
+        this.rankList = rankList;
+        this.rankBorderList = rankBorderList;
+        this.value = 0;
+        this.increase(value);
     }
-    public increase() {
-        this.value++;
-        if (this.value >= this.rankBorder[this.index]) {
+    public increase(value: number) {
+        this.value += value;
+        while (this.value >= this.rankBorderList[this.index] && this.index < this.rankList.length) {
             this.index++;
         }
     }
+
     public getValue() {
         return this.value;
     }
-    public getRank(){
-        return this.rank[this.index]
+
+    public getUnit() {
+        return this.unit;
     }
+
+    public getRank(){
+        return this.rankList[this.index];
+    }
+
+    public getNextBorder() {
+        return this.rankBorderList[this.index];
+    }
+
+    public static fromJSON() {
+        alert('Class signature has changed. Need to rewrite');
+    }
+    public getRankAt(index: number) {
+        return this.rankList[index];
+    }
+
+    public getNextRank() {
+        return this.rankBorderList[(this.index+1)];
+    }
+
     public toString() {
         var text = "";
-        text += this.getValue() + ": " + this.getRank();
+        text += this.getValue() + " " + this.unit + ": " + this.getRank();
         return text;
     }
 }
@@ -306,7 +377,7 @@ class Leaderboard extends PublishedGameElement {
         return leaderboard;
     }
 
-    public addGamer(newGamer: Gamer, points: number) {
+    public addGamer(newGamer: Gamer, points: number = 0) {
         this.gamerList.push(newGamer);
         this.pointList.push(new Points(this.publisher, points, this.unit));
     }
@@ -317,7 +388,7 @@ class Leaderboard extends PublishedGameElement {
         while (swap == true) {
             swap = false;
             for (var i = 0; i < this.pointList.length - 1; i++) {
-                if (this.pointList[i] < this.pointList[i + 1]) {
+                if (this.pointList[i].getValue() < this.pointList[i + 1].getValue()) {
                     var tempPoint = this.pointList[i];
                     var tempGamer = this.gamerList[i];
                     this.pointList[i] = this.pointList[i + 1];
@@ -354,12 +425,22 @@ class Leaderboard extends PublishedGameElement {
         }
         return trowArray;
     }
+
     public toStringUl() {
         var text = "<ul>";
         for (var i = 0; i < this.gamerList.length; ++i) {
             text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
         }
         text += "</ul>";
+        return text;
+    }
+
+    public toStringOl() {
+        var text = "<ol>";
+        for (var i = 0; i < this.gamerList.length; ++i) {
+            text += "<li>" + this.gamerList[i].toString() + " with " + this.pointList[i].toString() + " " + this.unit + "</li>";
+        }
+        text += "</ol>";
         return text;
     }
 
@@ -411,13 +492,141 @@ class Member {
 }
 
 class Quest extends PublishedGameElement {
-    private gamer: Gamer[];
+    private gamer: Gamer[] = [];
+    private title: String;
     private description: String;
-    private reward: Points;
+    private rewards: Points[] = [];
 
     constructor(publisher: Publisher, description: String, reward: Points) {
         super(publisher);
         this.description = description;
-        this.reward = reward;
+        this.rewards.push(reward);
+    }
+
+    public addReward(reward: Points) {
+        this.rewards.push(reward);
+    }
+
+    public static fromJSON() {
+        alert('Class signature has changed. Need to rewrite');
+    }
+
+    public toString() {
+        var text = "";
+        text += "Quest Master: " + this.publisher.toString() + "\n<br/>"
+        + "Title: " +this.title + "\n<br/>"
+        + "Description: " + this.description + "\n<br/>"
+        + "Rewards: " + "\n<br/>";
+        for (var i = 0; i < this.rewards.length; i++){
+            text += this.rewards[i].toString() + " ";
+            text += this.rewards[i].getUnit() + "\n<br/>";
+        }
+        return text;
+    }
+}
+
+class Achievement extends PublishedGameElement {
+    private title: String;
+    private description: String;
+    private gamer: Gamer[] = [];
+    private states: String[] = ["hidden", "showing", "unlocked"];
+    private status: number; //0: hidden, 1: showing, 2: unlocked
+    private pictures: String[] = []; // displaying the status via url
+
+    constructor(publisher: Publisher, title: String, description: String, pictures: String[]) {
+        super(publisher);
+        this.title = title;
+        this.description = description;
+        this.status = 0;
+        for(var i = 0; i < pictures.length; i++) {
+            this.pictures.push(pictures[i]);
+        }
+    }
+
+    public static fromJSON(json: String) {
+        // object to return
+        var achievement: Achievement;
+
+        // attributes to extract
+        var publisher: Publisher;
+        var gamer: Gamer[] = [];
+        var states: String[] = [];
+        var pictures: String[] = [];
+        var title: String;
+        var description: String;
+        var status: number;
+
+        // elements for extraction
+        var attributeArray = json.split('{');
+        var text = "";
+
+        // extract publisher
+        var secondaryArray = attributeArray[2].split('}');
+        publisher = Publisher.fromJSON('{' + secondaryArray[0] + '}');
+
+        // extract gamer list
+        var text = json.substring(json.indexOf(',"gamer":') + ',"gamer":'.length + 1, json.indexOf(',"states":') - 1);
+        attributeArray = text.split('}');
+        for (var i = 0; i < attributeArray.length; i++) {
+            // Eliminate ',' at the beginning of a line
+            if (attributeArray[i].charAt(0) == ',') {
+                attributeArray[i] = attributeArray[i].substring(1, attributeArray[i].length);
+            }
+            if (attributeArray[i].length >= '{"id":0,"password":"0","name":"0"}'.length) {
+                gamer.push(Gamer.fromJSON(attributeArray[i] + '}'));
+            }
+        }
+
+        // extract states
+        text = json.substring(json.indexOf(',"states":') + ',"states":'.length, json.indexOf(',"pictures":') - 1);
+        attributeArray = text.split('"');
+        for (var i = 1; i < attributeArray.length; i += 2) {
+                states.push(attributeArray[i]);
+        }
+
+        // extract pictures
+        text = json.substring(json.indexOf(',"pictures":["') + ',"pictures":["'.length, json.indexOf('"],"title":"'));
+        // replace \\\" with \"
+        text = text.split('\\\"').join('\"');
+        // replace ","\ with ,
+        text = text.split('","').join(',');
+
+        attributeArray = text.split(',');
+        for (var i = 0; i < attributeArray.length; i++) {
+                pictures.push(attributeArray[i]);
+        }
+
+        // extract title
+        text = json.substring(json.indexOf(',"title":"') + ',"title":"'.length, json.indexOf('","description":'));
+        title = text;
+
+        // extract description
+        text = json.substring(json.indexOf(',"description":"') + ',"description":"'.length, json.indexOf('","status":'));
+        description = text;
+
+        // extract status
+        text = json.substring(json.indexOf(',"status":') + ',"status":'.length, json.length - 1);
+        status = parseInt(text);
+
+        // create achievement
+        achievement = new Achievement(publisher, title, description, pictures);
+        achievement.gamer = gamer;
+        achievement.states = states;
+        achievement.status = status;
+
+        // return achievement
+        return achievement;
+    }
+
+    public toString() {
+        return this.pictures[this.status]
+    }
+
+    public setStatus(status: number) {
+        this.status = status;
+    }
+
+    public getStatus() {
+        return this.status;
     }
 }

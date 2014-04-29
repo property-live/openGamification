@@ -11,6 +11,9 @@
 </head>
 
 <body>
+    <!-- ---------------- -->
+    <!-- -  Page Home   - -->
+    <!-- ---------------- -->
     <div data-role="page" id="PageHome">
         <header data-role="header" data-theme="b">
             <h1>TestApp for openGamification</h1>
@@ -19,21 +22,32 @@
         <div data-role="body">
             <ul data-role="listview" data-inset="true" data-theme="d" data-divider-theme="d">
                 <li data-role="list-divider">GameElement Tests</li>
-                <li><a id="buttonHomeLeaderboard" data-icon="arrow-r">Leaderboard Test</a></li>
-                <li><a id="buttonHomeQuest" data-icon="arrow-r">Quest Test</a></li>
+                <li><a id="buttonHomeLeaderboard" data-icon="arrow-r">Leaderboard</a></li>
+                <li><a id="buttonHomeQuest" data-icon="arrow-r">Quest</a></li>
+                <li><a id="buttonHomeAchievement" data-icon="arrow-r">Achievement</a></li>
+                <li><a id="buttonHomeLevel" data-icon="arrow-r">Level</a></li>
+                <li><a id="buttonHomeAvatar" data-icon="arrow-r">Avatar (Dummie)</a></li>
 
-                <li data-role="list-divider">Links that will refresh the page</li>
-                <li><a href="file:///S:/Workspaces/GitHub/openGamification/openGamification/default.htm">Call File</a></li>
+                <li data-role="list-divider">User Tests</li>
+                <li><a id="buttonHomeGamer" data-icon="arrow-r">Gamer</a></li>
+                <li><a id="buttonHomePublisher" data-icon="arrow-r">Publisher</a></li>
             </ul>
         </div>
     </div>
+    <!-- ---------------- -->
+    <!-- - Leaderboard  - -->
+    <!-- ---------------- -->
     <div data-role="page" id="PageLeaderboard">
         <header data-role="header" data-theme="b">
-            <h1>TestApp for openGamification - Leaderboard Test</h1>
+            <h1>Leaderboard</h1>
             <button id="buttonLeaderboardBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
             <button id="buttonLeaderboardHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
         </header>
         <h3>Choose your content</h3>
+        <div data-role="collapsible" data-collapsed="true" data-theme="b" data-transition="fade">
+            <h3>Generated Gamer List</h3>
+            <div id="gamerList"></div>
+        </div>
         <div data-role="collapsible" data-collapsed="true" data-theme="b" data-transition="fade">
             <h3>Add Gamer</h3>
             <ul data-role="controlgroup" data-type="horizontal">
@@ -42,10 +56,6 @@
                 <li><a href="methods.html" data-role="button" data-transition="fade" data-icon="delete">Clear Input</a>
                     <a data-role="button" id="newGamerSubmit" data-icon="plus">Add Gamer</a></li>
             </ul>
-        </div>
-        <div data-role="collapsible" data-collapsed="true" data-theme="b" data-transition="fade">
-            <h3>Gamer List</h3>
-            <div id="gamerList"></div>
         </div>
         <div data-role="collapsible" data-collapsed="true" data-theme="b">
             <h3>Leaderboard</h3>
@@ -65,12 +75,96 @@
             </div>
         </div>
     </div>
+    <!-- ---------------- -->
+    <!-- -  Page Quest  - -->
+    <!-- ---------------- -->
     <div data-role="page" id="PageQuest">
         <header data-role="header" data-theme="b">
-            <h1>TestApp for openGamification - Quest Test</h1>
+            <h1>Quest</h1>
             <button id="buttonQuestBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
             <button id="buttonQuestHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
         </header>
+        <div id="quest">
+            Hier sollte ein Quest stehen ...
+            <br/>
+        </div>
+    </div>
+    <!-- ---------------- -->
+    <!-- Page Achievement -->
+    <!-- ---------------- -->
+    <div data-role="page" id="PageAchievement">
+        <header data-role="header" data-theme="b">
+            <h1>Quest</h1>
+            <button id="buttonAchievementBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
+            <button id="buttonAchievementHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
+        </header>
+        Achievement Hidden:
+        <div id="achievement">
+            Hier sollte ein Achievement stehen ...
+            <br />
+        </div>
+        Achievement Showing:
+        <div id="achievement1">
+            Hier sollte ein Achievement stehen ...
+            <br />
+        </div>
+        Achievment Unlocked:
+        <div id="achievement2">
+            Hier sollte ein Achievement stehen ...
+            <br />
+        </div>
+    </div>
+
+    <!-- ---------------- -->
+    <!-- -  Page Gamer  - -->
+    <!-- ---------------- -->
+    <div data-role="page" id="PageGamer">
+        <header data-role="header" data-theme="b">
+            <h1 id="gamer">Gamer</h1>
+            <button id="buttonGamerBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
+            <button id="buttonGamerHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
+        </header>
+        <div data-role="body">
+            <ul data-role="listview" data-inset="true" data-theme="d" data-divider-theme="d">
+                <li data-role="list-divider" id="gamerPublisher">Publisher Name</li>
+                <li>Points:</li>
+                <li><div id="gamerPoints"/></li>
+                <li>Level:</li>
+                <li><div id="gamerLevel"/></li>
+
+                <li data-role="list-divider">Publisher: Publisher 2 (Dummie)</li>
+                <li>Points:</li>
+                <li>100300 Karma Points (Dummie)</li>
+                <li>Level:</li>
+                <li>Goddess (Dummie)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ---------------- -->
+    <!-- -  Publisher   - -->
+    <!-- ---------------- -->
+    <div data-role="page" id="PagePublisher">
+        <header data-role="header" data-theme="b">
+            <h1>Publisher</h1>
+            <button id="buttonPublisherBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
+            <button id="buttonPublisherHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
+        </header>
+    </div>
+
+    <!-- ---------------- -->
+    <!-- -  LevelTest   - -->
+    <!-- ---------------- -->
+    <div data-role="page" id="PageLevel">
+        <header data-role="header" data-theme="b">
+            <h1>Level</h1>
+            <button id="buttonLevelBack" data-role="button" class="ui-btn-left" data-icon="arrow-l">Back</button>
+            <button id="buttonLevelHome" data-role="button" class="ui-btn-right" data-icon="arrow-u">Home</button>
+        </header>
+        <div id="level">
+            Hier sollte ein Level stehen ...
+            <br />
+        </div>
     </div>
 </body>
 </html>
